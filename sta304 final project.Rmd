@@ -1,0 +1,127 @@
+---
+title: STA304 Final Project:General important segments that influencing Amazon's bestselling
+  books.
+author: "Tianyi Zhang 1004708382"
+date: "2020/12/21"
+output:
+  word_document: default
+  pdf_document: default
+fontsize: 12pt
+---
+
+## \textcolor{blue}{Keywords}
+Keywords:
+Amazon top selling books, linear regression model, non-friction vs. friction, reviews, ratings, diagnostics 
+\newline
+
+## \textcolor{blue}{Abstract}
+Abstract:
+Nowadays people are actually preferring reading paper books rather than e-books as they are already using too many technological devices. The research is aiming to presume a specific assumption that ratings of these top selling books are based on the main book section(which includes reviews, prices, years and book types), then finding the important segments that affecting people’s choices of books. The model used here is a linear regression model in which the user rating is selected as response variables. Diagnostics are also being tested. From the result of the model, we are able to find the most significant variable and solve the augment. Yet, limitations are existed and more steps could be taken to make the research more accurate.
+\newline
+
+## \textcolor{blue}{Introduction}
+Introduction:
+As technology develops, most people read e-books in the past ten years. However, nowadays the market is trending towards the original paper books. The interesting research is about how people choose from the large variety of paper books. The dataset reveals on Amazon’s top 50 best-selling books from 2009 to 2019 which contains 550 books and variety of reviews. Since costumers sometimes feel confused and hesitated when they are choosing books they want to buy, they usually choose books based on several important features. 
+\newline
+Excluding those types of costumers who only read certain kinds of books, most costumers actually have no idea what type of books they want to read.  The argument of the research is that to investigate the general important segments that influencing Amazon's top bestselling books.(excluding personal preferences, only based on data). To test the significance of different variables in this analysis, a linear regression model will best fit.
+\newline
+In this research, the dataset being used is “Amazon-top-50-bestselling-books” from 2009 to 2019 during 10 years. For the mythology section, significant data variables will be introduced which affected the ratings of books. The model being used is linear regression model that best explains the result and progress of this research. The diagnostics and assumptions of the model will be checked to ensure accuracy. Last, limits existed in the research and improvements are introduced in which we can make the prediction better.
+By developing this research, the goal is to find out the significant factor of how people choosing the books that make these books popular on bestselling lists.
+\newline
+
+## \textcolor{blue}{Mythology(data and model): Option A}
+Methodology(data&model)
+The option being chosen here is option in which we chose the free dataset to work with.The dataset being analyzed in the research is called “Amazon-top-50-bestselling-books” from 2009 to 2019. Instead of the different book names and author names, the key response variable here being tested is the “User Rating” of amazon books. Other significant variables which influences the user ratings are reviews, price, year and genre. There are total number of 550 observations involved.
+\newline
+Detailed variables’ explanation: 
+User Rating: key response variable, Amazon user rating that being graded after buy or read the books.
+Reviews: the number of written reviews and comments under the certain section of books.
+Price: the prices of books(as at 13/10/2020).
+Year: the years it ranked on the bestseller.
+Genre: whether the book is fiction or non-fiction. In which the non fiction takes around 56% and fiction is around 44%.
+Based on this specific dataset, our aim is to find the most significant influence to the user rating of Amazon’s top selling books and analyze the reason for why people select those books based on the information they consume. There’re limitations, however we assume people choose books based on the limited information they can observe from the book main page which includes reviews, price, year and genre. And the goal is to test the relationship between key significant variables and the resulted rating.
+\newline
+
+```{r}
+library(tidyverse)
+
+#The argument is to find the important segments that influencing Amazon's top bestselling books.
+
+#reference: https://www.kaggle.com/sootersaalu/amazon-top-50-bestselling-books-2009-2019
+
+Amazon_books <- read.csv("/Users/Nova/Desktop/bestsellers with categories.csv")
+summary(Amazon_books)
+#we have the original clean data
+```
+
+Model: 
+Linear regression model
+The regression model being used here to analyze this dataset is linear regression model. Since the response variable being chosen in this research is a numerical variable, linear regression model is the most accurate and simple way to determine our result. The linear regression model includes User Rating as response variable, and Reviews, Price, Year, Genre as predictor variables.
+\newline
+The regression is written as: $Y = -3.351^-1+(-2.313^-6)X_{Reviews} + (-1.668^-3)X_{Price} + (1.897^-2)X_{Year} + (-6.435^-2)X_{Genre}$
+This implies the correlation between the response variable Y and predictor variables X and how they would determine each other. Normally, the parameter beta 0 which in this formula is -3.351^-1 is the y-intercept, the number before each variable X is the given slope that shows the positive or negative relationship for the linear regression.
+\newline
+
+```{r}
+#linear regression model
+model = lm(Amazon_books$User.Rating ~ Amazon_books$Reviews + Amazon_books$Price + Amazon_books$Year + Amazon_books$Genre, data = Amazon_books)
+summary(model)
+```
+## \textcolor{blue}{Result}
+Result:
+The given result of the linear regression model is given below. We summarize the model to view the results. From the resulted statistics, we can see the estimated p-value for variable reviews, year and genre are smaller than 0.05 which are significant(reviews: 0.00720; year: 1.52^-9; genre: 0.00127) to the response variables. This means these variables have significant influence to how the readers rate for the amazon books.
+\newline
+Then we plot the model into diagnostics to check if the assumptions for linear regression holds, the given graphs are shown below. The first graph shows residuals versus fitted and gives several point intervals on graph. The red line called polynomial curve in the middle illustrate the pattern of residuals, which is nearly like a straight line. The dots are mostly concentrated between 4.50 to 4.70 and this interpreted the linearity for our linear regression model.
+\newline
+The next normal QQ plot aim to test the model has normality or not. In the QQ plot, it is seen that most of the dots forms a trend close to the diagonal line, which illustrated that the assumption of normality holds for this model. Then is the Scale-Location graph. For the assumption we need a constance variance for the linear regression model, however although the points on graph is a little mass and have no regularity, the red line in the middle is horizontal and constant, we can say the assumption partially holds.
+\newline
+Last for the residual versus leverage point is to view if there’s bad leverage points in the model which affected the result. The test of leverage point and a scatterplot is also made to better understand this. It can be seen from the graph that most leverage points are concentrated between 0.00 and 0.02 and there’re only a few of them are out of range. This follows our diagnostics.
+\newline
+
+```{r}
+#plot into graphs check assumptions
+plot(model)
+
+#determine whether there are leverage points
+h <- hatvalues(model)
+threshold <- 2 * (length(model$coefficients)/nrow(Amazon_books))
+w <- which(h > threshold)
+Amazon_books[w,]
+# make a scatterplot matrix and highlight leverage points
+leverage <- ifelse(h > threshold, 1, 0)
+columns <- c("pink", "green")
+```
+
+## \textcolor{blue}{Discussion}
+Discussion:
+
+Summary:
+Nowadays more people actually prefer paper books rather than e-books, the goal of this research is to find the importance segment that influencing amazon’s top selling books. In the previous research, we analyze the clean data of Amazon top selling books and generate a linear regression model in order to find significant factors which affect top selling books’ rating. The variables involved are reviews, price, year and genre, user rating as response variable. After checking the significance of p-value and the linear regression model, we plot the model and check the diagnostics and assumptions to results.
+\newline
+Conclusion:
+In conclusion, the resulted linear regression model shows the significant p-value of reviews: 0.00720; year: 1.52^-9; genre: 0.00127 related to the response variable of user rating of amazon books. This illustrate the fact that excludes from specific personal favorites, most costumers tend to rate higher for books with more reviews, newer years and frictions. Just like the newest popular top one selling book in Amazon is <A Promised Land Hardcover – November 17, 2020> from Obama(2), although this may related to the recent situation in United States, we can see that the book is very new and consist a lot of reviews, which shows that our assumptions and results are credible.
+\newline
+To accomplish this research, a questionnaire for people around was also being build. The goal is just to interview and understand the main social situation of top book selling in amazon, not just for paper book but amazon also includes e-editions. Most of the young students prefer e-books of friction and newest among those year, they prefer to choose books with lots of reviews so that they know most people already read them, should be good, thus the ratings are high too. The resulted is being tested and confirmed in the reality, by understanding the relationship in between, from the consumers’ views, we are able to choose books that are good to read. From the producer’s view, by controlling the reviews of the books, it might attract more consumers to buy a specific type of book. Overall, reviews, year and genres have the significant relationship to user ratings of amazon’s top selling books.
+\newline
+
+## \textcolor{blue}{weakness & next steps}
+Weakness:
+There’s few limitations and weakness of this model and the research should be improved to produce better result. The first important limitation is that this research is based on the assumption that people choose books and rate them depending on information produced on book section page instead of their favorites or preferring. For instance, if someone only likes horror stories and is in favor of a particular author’s book, it’s hard to determine the factor that affect the choices of his. Other situations are also possible. Due to this limited assumption, our result only based on the data we have. Another weakness are the observations being chosen. Since we only include 550 observations in this dataset, and we did not include the recent two years data, it might be inaccurate due to the limited observations we have. To make the result with accuracy, we should use more observations. 
+\newline
+Next step:
+The first step is to involve more observations and make the dataset more convinced. Then more variables that influences readers choices and ratings of books can be included. Such as variety of types of book; certain authors or has film or not etc. With more variables, we are able to find the most significant one. The result of this research can be used to test and predict what readers prefer for the amazon books. Other effective way of verifying this research is to do specific questionnaires on people’s choices of books, based on the result, we would be confident with the argument better.
+\newline
+
+## \textcolor{blue}{References}
+References:
+Data from: 1. https://www.kaggle.com/sootersaalu/amazon-top-50-bestselling-books-2009-2019
+2. https://www.amazon.com/Promised-Land-Barack-Obama/dp/1524763160/ref=zg_bs_books_1/143-1870020-2829640?_encoding=UTF8&psc=1&refRID=7PBXQ7D2NTXPYN7AV9FM
+
+
+
+
+
+
+
+
+
